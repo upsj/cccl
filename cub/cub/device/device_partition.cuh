@@ -435,6 +435,7 @@ private:
             typename OffsetT,
             typename BeginOffsetIteratorT,
             typename EndOffsetIteratorT,
+            typename SegmentOffsetT,
             typename PolicyHub>
   friend class DispatchSegmentedSort;
 
