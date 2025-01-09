@@ -48,6 +48,11 @@ _CCCL_NV_DIAG_SUPPRESS(177) // catch2 may contain unused variables
 #include <c2h/test_util_vec.h>
 #include <c2h/utility.h>
 #include <c2h/vector.h>
+#include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/generators/catch_generators_all.hpp>
+#include <catch2/matchers/catch_matchers.hpp>
+#include <catch2/matchers/catch_matchers_vector.hpp>
 
 #ifndef VAR_IDX
 #  define VAR_IDX 0
@@ -110,11 +115,11 @@ std::vector<T> to_vec(std::vector<T> const& vec)
 }
 } // namespace detail
 
-#define REQUIRE_APPROX_EQ(ref, out)                \
-  {                                                \
-    auto vec_ref = detail::to_vec(ref);            \
-    auto vec_out = detail::to_vec(out);            \
-    REQUIRE_THAT(vec_ref, Catch::Approx(vec_out)); \
+#define REQUIRE_APPROX_EQ(ref, out)                          \
+  {                                                          \
+    auto vec_ref = detail::to_vec(ref);                      \
+    auto vec_out = detail::to_vec(out);                      \
+    REQUIRE_THAT(vec_ref, Catch::Matchers::Approx(vec_out)); \
   }
 
 namespace detail
@@ -140,7 +145,7 @@ struct bitwise_equal
 
 // Catch2 Matcher that calls `std::equal` with a default-constructable custom predicate
 template <typename Range, typename Pred>
-struct CustomEqualsRangeMatcher : Catch::MatcherBase<Range>
+struct CustomEqualsRangeMatcher : Catch::Matchers::MatcherBase<Range>
 {
   CustomEqualsRangeMatcher(Range const& range)
       : range{range}
