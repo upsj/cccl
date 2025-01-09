@@ -54,7 +54,7 @@ CUB_NAMESPACE_BEGIN
  * @brief A discard iterator
  */
 template <typename OffsetT = ptrdiff_t>
-class DiscardOutputIterator
+class CCCL_DEPRECATED_BECAUSE("Use thrust::discard_iterator instead") DiscardOutputIterator
 {
 public:
   // Required iterator traits

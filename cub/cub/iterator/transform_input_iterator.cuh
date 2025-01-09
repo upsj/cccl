@@ -110,7 +110,7 @@ CUB_NAMESPACE_BEGIN
  *   The difference type of this iterator (Default: @p ptrdiff_t)
  */
 template <typename ValueType, typename ConversionOp, typename InputIteratorT, typename OffsetT = ptrdiff_t>
-class TransformInputIterator
+class CCCL_DEPRECATED_BECAUSE("Use thrust::transform_iterator instead") TransformInputIterator
 {
 public:
   // Required iterator traits
