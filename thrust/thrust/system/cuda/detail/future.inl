@@ -309,7 +309,9 @@ struct unique_eager_future_promise_pair final
   weak_promise<X, XPointer> promise;
 };
 
-struct acquired_stream final
+_CCCL_SUPPRESS_DEPRECATED_PUSH // for thrust::optional
+
+  struct acquired_stream final
 {
   unique_stream stream;
   optional<std::size_t> const acquired_from;
@@ -338,6 +340,8 @@ inline _CCCL_HOST optional<unique_stream> try_acquire_stream(int device, unique_
 // Precondition: `device` is the current CUDA device.
 template <typename X>
 _CCCL_HOST optional<unique_stream> try_acquire_stream(int device, unique_eager_future<X>& parent) noexcept;
+
+_CCCL_SUPPRESS_DEPRECATED_POP
 
 template <typename... Dependencies>
 _CCCL_HOST acquired_stream acquire_stream(int device, Dependencies&... deps) noexcept;
@@ -742,8 +746,10 @@ public:
     stream().wait();
   }
 
-  friend _CCCL_HOST optional<detail::unique_stream>
-  thrust::system::cuda::detail::try_acquire_stream(int device_id, unique_eager_event& parent) noexcept;
+  _CCCL_SUPPRESS_DEPRECATED_PUSH // for thrust::optional
+    friend _CCCL_HOST optional<detail::unique_stream>
+    thrust::system::cuda::detail::try_acquire_stream(int device_id, unique_eager_event& parent) noexcept;
+  _CCCL_SUPPRESS_DEPRECATED_POP
 
   template <typename... Dependencies>
   friend _CCCL_HOST unique_eager_event
@@ -900,9 +906,11 @@ public:
   }
 #  endif
 
-  template <typename X>
-  friend _CCCL_HOST optional<detail::unique_stream>
-  thrust::system::cuda::detail::try_acquire_stream(int device_id, unique_eager_future<X>& parent) noexcept;
+  _CCCL_SUPPRESS_DEPRECATED_PUSH // for thrust::optional
+    template <typename X>
+    friend _CCCL_HOST optional<detail::unique_stream>
+    thrust::system::cuda::detail::try_acquire_stream(int device_id, unique_eager_future<X>& parent) noexcept;
+  _CCCL_SUPPRESS_DEPRECATED_POP
 
   template <typename X, typename XPointer, typename ComputeContent, typename... Dependencies>
   friend _CCCL_HOST detail::unique_eager_future_promise_pair<X, XPointer>
@@ -915,9 +923,10 @@ public:
 
 namespace detail
 {
+_CCCL_SUPPRESS_DEPRECATED_PUSH // for thrust::optional
 
-template <typename X, typename Deleter>
-_CCCL_HOST optional<unique_stream> try_acquire_stream(int, std::unique_ptr<X, Deleter>&) noexcept
+  template <typename X, typename Deleter>
+  _CCCL_HOST optional<unique_stream> try_acquire_stream(int, std::unique_ptr<X, Deleter>&) noexcept
 {
   // There's no stream to acquire!
   return {};
@@ -971,6 +980,8 @@ _CCCL_HOST optional<unique_stream> try_acquire_stream(int device_id, unique_eage
 
   return {};
 }
+
+_CCCL_SUPPRESS_DEPRECATED_POP
 
 ///////////////////////////////////////////////////////////////////////////////
 
