@@ -51,6 +51,9 @@
 #include <cub/thread/thread_search.cuh>
 #include <cub/util_type.cuh>
 
+#include <thrust/detail/config/namespace.h>
+#include <thrust/iterator/counting_iterator.h>
+
 #include <cuda/std/type_traits>
 
 #include <iterator>
@@ -374,7 +377,7 @@ struct AgentSpmv
     CTA_SYNC();
 
     // Search for the thread's starting coordinate within the merge tile
-    CountingInputIterator<OffsetT> tile_nonzero_indices(tile_start_coord.y);
+    THRUST_NS_QUALIFIER::counting_iterator<OffsetT> tile_nonzero_indices(tile_start_coord.y);
     CoordinateT thread_start_coord;
 
     MergePathSearch(
