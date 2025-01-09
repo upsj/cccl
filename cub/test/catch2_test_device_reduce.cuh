@@ -203,11 +203,12 @@ inline __half* unwrap_it(half_t* it)
 }
 
 template <class OffsetT>
-inline cub::ConstantInputIterator<__half, OffsetT> unwrap_it(cub::ConstantInputIterator<half_t, OffsetT> it)
+inline THRUST_NS_QUALIFIER::constant_iterator<__half, OffsetT>
+unwrap_it(THRUST_NS_QUALIFIER::constant_iterator<half_t, OffsetT> it)
 {
   half_t wrapped_val = *it;
   __half val         = wrapped_val.operator __half();
-  return cub::ConstantInputIterator<__half, OffsetT>(val);
+  return THRUST_NS_QUALIFIER::constant_iterator<__half, OffsetT>(val);
 }
 #endif
 
@@ -218,11 +219,12 @@ inline __nv_bfloat16* unwrap_it(bfloat16_t* it)
 }
 
 template <class OffsetT>
-cub::ConstantInputIterator<__nv_bfloat16, OffsetT> inline unwrap_it(cub::ConstantInputIterator<bfloat16_t, OffsetT> it)
+THRUST_NS_QUALIFIER::constant_iterator<__nv_bfloat16, OffsetT> inline unwrap_it(
+  THRUST_NS_QUALIFIER::constant_iterator<bfloat16_t, OffsetT> it)
 {
   bfloat16_t wrapped_val = *it;
   __nv_bfloat16 val      = wrapped_val.operator __nv_bfloat16();
-  return cub::ConstantInputIterator<__nv_bfloat16, OffsetT>(val);
+  return THRUST_NS_QUALIFIER::constant_iterator<__nv_bfloat16, OffsetT>(val);
 }
 #endif
 
