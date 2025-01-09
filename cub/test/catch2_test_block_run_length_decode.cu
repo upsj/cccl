@@ -334,7 +334,7 @@ void TestAlgorithmSpecialisation()
   using RunItemT      = float;
   using RunLengthT    = uint32_t;
   using ItemItT       = thrust::counting_iterator<RunItemT>;
-  using RunLengthsItT = cub::TransformInputIterator<RunLengthT, ModOp, thrust::counting_iterator<RunLengthT>>;
+  using RunLengthsItT = thrust::transform_iterator<ModOp, thrust::counting_iterator<RunLengthT>>;
 
   ItemItT d_unique_items(1000U);
   RunLengthsItT d_run_lengths(thrust::counting_iterator<RunLengthT>(0), ModOp{});
