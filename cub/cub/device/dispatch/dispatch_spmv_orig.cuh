@@ -55,6 +55,7 @@
 #include <cub/util_math.cuh>
 #include <cub/util_type.cuh>
 
+#include <thrust/iterator/counting_iterator.h>
 #include <thrust/system/cuda/detail/core/triple_chevron_launch.h>
 
 #include <cstdio>
@@ -152,7 +153,7 @@ DeviceSpmvSearchKernel(int num_merge_tiles, CoordinateT* d_tile_coordinates, Spm
   {
     OffsetT diagonal = (tile_idx * TILE_ITEMS);
     CoordinateT tile_coordinate;
-    CountingInputIterator<OffsetT> nonzero_indices(0);
+    thrust::counting_iterator<OffsetT> nonzero_indices(0);
 
     // Search the merge path
     MergePathSearch(

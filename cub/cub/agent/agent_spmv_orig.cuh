@@ -47,7 +47,6 @@
 #include <cub/block/block_reduce.cuh>
 #include <cub/block/block_scan.cuh>
 #include <cub/iterator/cache_modified_input_iterator.cuh>
-#include <cub/iterator/counting_input_iterator.cuh>
 #include <cub/thread/thread_operators.cuh>
 #include <cub/thread/thread_search.cuh>
 #include <cub/util_type.cuh>
@@ -556,7 +555,7 @@ struct AgentSpmv
     CTA_SYNC();
 
     // Search for the thread's starting coordinate within the merge tile
-    CountingInputIterator<OffsetT> tile_nonzero_indices(tile_start_coord.y);
+    thrust::counting_iterator<OffsetT> tile_nonzero_indices(tile_start_coord.y);
     CoordinateT thread_start_coord;
 
     MergePathSearch(
@@ -690,7 +689,7 @@ struct AgentSpmv
         // Search our starting coordinates
         OffsetT diagonal = (tile_idx + threadIdx.x) * TILE_ITEMS;
         CoordinateT tile_coord;
-        CountingInputIterator<OffsetT> nonzero_indices(0);
+        thrust::counting_iterator<OffsetT> nonzero_indices(0);
 
         // Search the merge path
         MergePathSearch(
