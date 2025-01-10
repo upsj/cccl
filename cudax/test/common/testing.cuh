@@ -11,6 +11,8 @@
 #ifndef __COMMON_TESTING_H__
 #define __COMMON_TESTING_H__
 
+#include <cuda/__cccl_config>
+
 #include <cuda/experimental/launch.cuh>
 
 #include <exception> // IWYU pragma: keep
@@ -20,6 +22,14 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <nv/target>
+
+// workaround for error #3185-D: no '#pragma diagnostic push' was found to match this 'diagnostic pop'
+#if _CCCL_COMPILER(NVHPC)
+#  undef CATCH_INTERNAL_START_WARNINGS_SUPPRESSION
+#  undef CATCH_INTERNAL_STOP_WARNINGS_SUPPRESSION
+#  define CATCH_INTERNAL_START_WARNINGS_SUPPRESSION _Pragma("diag push")
+#  define CATCH_INTERNAL_STOP_WARNINGS_SUPPRESSION  _Pragma("diag pop")
+#endif
 
 namespace cuda::experimental::__async
 {
