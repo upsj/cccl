@@ -191,11 +191,13 @@ public:
   }
 
   /// ostream operator
+  _CCCL_SUPPRESS_DEPRECATED_PUSH
   friend std::ostream& operator<<(std::ostream& os, const self_type& itr)
   {
     os << "[" << itr.offset << "]";
     return os;
   }
+  _CCCL_SUPPRESS_DEPRECATED_POP
 };
 
 CUB_NAMESPACE_END

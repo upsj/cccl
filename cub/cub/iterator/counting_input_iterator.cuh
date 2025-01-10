@@ -218,11 +218,13 @@ public:
 
   /// ostream operator
 #if !_CCCL_COMPILER(NVRTC)
+  _CCCL_SUPPRESS_DEPRECATED_PUSH
   friend std::ostream& operator<<(std::ostream& os, const self_type& itr)
   {
     os << "[" << itr.val << "]";
     return os;
   }
+  _CCCL_SUPPRESS_DEPRECATED_POP
 #endif // !_CCCL_COMPILER(NVRTC)
 };
 
