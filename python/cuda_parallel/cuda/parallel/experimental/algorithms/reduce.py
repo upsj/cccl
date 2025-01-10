@@ -6,7 +6,7 @@
 from __future__ import annotations  # TODO: required for Python 3.7 docs env
 
 import ctypes
-from typing import Callable
+from typing import Callable, Optional
 
 import numba
 import numpy as np
@@ -44,6 +44,30 @@ class _Op:
 def _dtype_validation(dt1, dt2):
     if dt1 != dt2:
         raise TypeError(f"dtype mismatch: __init__={dt1}, __call__={dt2}")
+
+
+def _validate_and_get_stream(stream) -> Optional[int]:
+    # null stream is allowed
+    if stream is None:
+        return None
+
+    if not hasattr(stream, "__cuda_stream__"):
+        raise TypeError(
+            f"stream argument {stream} does not implement the '__cuda_stream__' protocol"
+        )
+
+    stream_property = stream.__cuda_stream__
+    if (
+        isinstance(stream_property, tuple)
+        and len(stream_property) == 2
+        and all(isinstance(i, int) for i in stream_property)
+    ):
+        version, handle = stream_property
+        return handle
+
+    raise TypeError(
+        f"__cuda_stream__ property of '{stream}' must return a 'Tuple[int, int]'; got {stream_property} instead"
+    )
 
 
 class _Reduce:
@@ -85,7 +109,9 @@ class _Reduce:
         if error != enums.CUDA_SUCCESS:
             raise ValueError("Error building reduce")
 
-    def __call__(self, temp_storage, d_in, d_out, num_items: int, h_init: np.ndarray):
+    def __call__(
+        self, temp_storage, d_in, d_out, num_items: int, h_init: np.ndarray, stream=None
+    ):
         d_in_cccl = cccl.to_cccl_iter(d_in)
         if d_in_cccl.type.value == cccl.IteratorKind.ITERATOR:
             assert num_items is not None
@@ -101,6 +127,7 @@ class _Reduce:
         )
         _dtype_validation(self._ctor_d_out_dtype, d_out.dtype)
         _dtype_validation(self._ctor_init_dtype, h_init.dtype)
+        stream_handle = _validate_and_get_stream(stream)
         bindings = get_bindings()
         if temp_storage is None:
             temp_storage_bytes = ctypes.c_size_t()
@@ -120,7 +147,7 @@ class _Reduce:
             ctypes.c_ulonglong(num_items),
             self.op_wrapper.handle(),
             cccl.host_array_to_value(h_init),
-            None,
+            stream_handle,
         )
         if error != enums.CUDA_SUCCESS:
             raise ValueError("Error reducing")
