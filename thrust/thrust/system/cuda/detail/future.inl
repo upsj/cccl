@@ -999,7 +999,6 @@ acquire_stream_impl(int device_id, std::tuple<Dependencies...>& deps, index_sequ
 {
   _CCCL_SUPPRESS_DEPRECATED_PUSH // for thrust::optional (MSVC warnings here)
     auto tr = try_acquire_stream(device_id, std::get<I0>(deps));
-  _CCCL_SUPPRESS_DEPRECATED_POP
 
   if (tr)
   {
@@ -1009,6 +1008,7 @@ acquire_stream_impl(int device_id, std::tuple<Dependencies...>& deps, index_sequ
   {
     return acquire_stream_impl(device_id, deps, index_sequence<Is...>{});
   }
+  _CCCL_SUPPRESS_DEPRECATED_POP
 }
 
 template <typename... Dependencies>
