@@ -558,7 +558,7 @@ struct AgentSpmv
     CTA_SYNC();
 
     // Search for the thread's starting coordinate within the merge tile
-    thrust::counting_iterator<OffsetT> tile_nonzero_indices(tile_start_coord.y);
+    THRUST_NS_QUALIFIER::counting_iterator<OffsetT> tile_nonzero_indices(tile_start_coord.y);
     CoordinateT thread_start_coord;
 
     MergePathSearch(
@@ -692,7 +692,7 @@ struct AgentSpmv
         // Search our starting coordinates
         OffsetT diagonal = (tile_idx + threadIdx.x) * TILE_ITEMS;
         CoordinateT tile_coord;
-        thrust::counting_iterator<OffsetT> nonzero_indices(0);
+        THRUST_NS_QUALIFIER::counting_iterator<OffsetT> nonzero_indices(0);
 
         // Search the merge path
         MergePathSearch(
