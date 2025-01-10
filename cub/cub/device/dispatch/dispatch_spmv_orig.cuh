@@ -153,7 +153,7 @@ DeviceSpmvSearchKernel(int num_merge_tiles, CoordinateT* d_tile_coordinates, Spm
   {
     OffsetT diagonal = (tile_idx * TILE_ITEMS);
     CoordinateT tile_coordinate;
-    thrust::counting_iterator<OffsetT> nonzero_indices(0);
+    THRUST_NS_QUALIFIER::counting_iterator<OffsetT> nonzero_indices(0);
 
     // Search the merge path
     MergePathSearch(
