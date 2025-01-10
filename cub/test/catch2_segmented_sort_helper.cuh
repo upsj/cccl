@@ -110,12 +110,11 @@ struct mod_n
 };
 
 template <typename KeyT>
-class short_key_verification_helper
+struct short_key_verification_helper
 {
-private:
   using key_t = KeyT;
   // The histogram size of the keys being sorted for later verification
-  static constexpr auto max_histo_size = 1ULL << (8 * sizeof(key_t));
+  const ::cuda::std::int64_t max_histo_size = 1LL << (8 * sizeof(key_t));
 
   // Holding the histogram of the keys being sorted for verification
   c2h::host_vector<std::size_t> keys_histogram{};
@@ -124,7 +123,7 @@ public:
   void prepare_verification_data(const c2h::device_vector<key_t>& in_keys)
   {
     c2h::host_vector<key_t> h_in{in_keys};
-    keys_histogram = c2h::host_vector<std::size_t>(max_histo_size, 0);
+    keys_histogram = c2h::host_vector<std::size_t>(short_key_verification_helper<KeyT>::max_histo_size, 0);
     for (const auto& key : h_in)
     {
       keys_histogram[key]++;
@@ -135,7 +134,7 @@ public:
   {
     // Verify keys are sorted next to each other
     auto count = thrust::unique_count(c2h::device_policy, out_keys.cbegin(), out_keys.cend(), thrust::equal_to<int>());
-    REQUIRE(count <= max_histo_size);
+    REQUIRE(count <= short_key_verification_helper<KeyT>::max_histo_size);
 
     // Verify keys are sorted using prior histogram computation
     auto index_it = thrust::make_counting_iterator(std::size_t{0});
