@@ -54,6 +54,14 @@ _CCCL_NV_DIAG_SUPPRESS(177) // catch2 may contain unused variables
 #include <catch2/matchers/catch_matchers.hpp>
 #include <catch2/matchers/catch_matchers_vector.hpp>
 
+// workaround for error #3185-D: no '#pragma diagnostic push' was found to match this 'diagnostic pop'
+#if _CCCL_COMPILER(NVHPC) || _CCCL_COMPILER(MSVC)
+#  undef CATCH_INTERNAL_START_WARNINGS_SUPPRESSION
+#  undef CATCH_INTERNAL_STOP_WARNINGS_SUPPRESSION
+#  define CATCH_INTERNAL_START_WARNINGS_SUPPRESSION _Pragma("diag push")
+#  define CATCH_INTERNAL_STOP_WARNINGS_SUPPRESSION  _Pragma("diag pop")
+#endif
+
 #ifndef VAR_IDX
 #  define VAR_IDX 0
 #endif
