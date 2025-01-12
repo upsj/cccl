@@ -32,6 +32,7 @@
 #pragma once
 
 #include <cub/config.cuh>
+#include <type_traits>
 #include "thrust/iterator/constant_iterator.h"
 
 #if defined(_CCCL_IMPLICIT_SYSTEM_HEADER_GCC)
@@ -49,6 +50,12 @@
 CUB_NAMESPACE_BEGIN
 
 
+template<typename RefT, typename WrappedItT, typename VanillaItT>
+void debug_fail(WrappedItT wrapped, VanillaItT vanilla)
+{
+  static_assert(std::is_same<WrappedItT, void>::value, "Debug...");
+}
+
 template <typename Iterator, typename OffsetItT>
 class OffsetIteratorT : public THRUST_NS_QUALIFIER::iterator_adaptor<OffsetIteratorT<Iterator, OffsetItT>, Iterator>
 {
@@ -60,6 +67,7 @@ public:
   _CCCL_HOST_DEVICE OffsetIteratorT(const Iterator& it, OffsetItT offset_it)
       : super_t(it)
       , offset_it(offset_it)
+      , it(it)
   {}
 
   // befriend thrust::iterator_core_access to allow it access to the private interface below
@@ -67,9 +75,11 @@ public:
 
 private:
   OffsetItT offset_it;
+  Iterator it;
 
   _CCCL_HOST_DEVICE typename super_t::reference dereference() const
   {
+    debug_fail<typename super_t::reference>(*(this->base() + (*offset_it)), *it);
     return *(this->base() + (*offset_it));
   }
 };
