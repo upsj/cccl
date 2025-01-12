@@ -211,7 +211,7 @@ private: // Core iterator interface for iterator_facade
 
     // counting_iterator will pick eg. diff_t=int64 when base=int32.
     // Explicitly cast to avoid static conversion warnings.
-    m_iterator = static_cast<base_type>(m_iterator + n);
+    m_iterator = (m_iterator + n);
   }
 
   _CCCL_EXEC_CHECK_DISABLE
